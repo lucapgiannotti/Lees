@@ -1,0 +1,44 @@
+/* src/index.css */
+@import "tailwindcss";
+
+/* CRITICAL FIX: Use @theme instead of :root 
+  This tells the Tailwind v4 engine to generate classes 
+  like `bg-primary` and `font-headline-lg`.
+*/
+@theme {
+  /* Colors */
+  --color-background: #f9f9ff;
+  --color-surface: #f9f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f0f3ff;
+  --color-surface-container: #e7eeff;
+  --color-surface-container-high: #dee8ff;
+  --color-on-surface: #111c2d;
+  --color-on-surface-variant: #554336;
+  --color-outline: #887364;
+  --color-outline-variant: #dbc2b0;
+  --color-primary: #8d4b00;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #b15f00;
+  --color-on-primary-container: #fffbff;
+  --color-secondary: #1b6b51;
+  --color-secondary-container: #a6f2d1;
+  --color-on-secondary-container: #237157;
+  --color-error: #ba1a1a;
+
+  /* Typography */
+  --font-headline-lg: "Space Grotesk", sans-serif;
+  --font-headline-md: "Space Grotesk", sans-serif;
+  --font-metric-xl: "Space Grotesk", sans-serif;
+  --font-body-lg: "Work Sans", sans-serif;
+  --font-body-md: "Work Sans", sans-serif;
+  --font-label-sm: "Space Grotesk", sans-serif;
+}
+
+/* Optional: Global resets */
+@layer base {
+  body {
+    /* Now we can use the Tailwind utility classes directly! */
+    @apply bg-background text-on-surface font-body-md;
+  }
+}
