@@ -91,6 +91,4 @@ Base URL: `http://127.0.0.1:8000`
 
 ## License
 
-No project license file is currently included.
-
-If you intend Lees to be publicly reusable as open source, add a `LICENSE` file (for example MIT, Apache-2.0, or GPL-3.0).
+MIT License
