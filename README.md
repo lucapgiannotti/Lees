@@ -93,5 +93,6 @@ Base URL: `http://127.0.0.1:8000`
 5. Open a pull request with a clear summary and screenshots for UI changes.
 
 ## License
+[![Licence](https://img.shields.io/github/license/lucapgiannotti/Lees?style=for-the-badge&color=ed966d)](./LICENSE)
 
 MIT License
