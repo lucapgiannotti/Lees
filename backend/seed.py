@@ -174,7 +174,8 @@ def seed_db():
                     "amount": 11.5,
                     "unit": "g",
                     "scalable": False,
-                    "notes": "dry yeast package. Rehydrate in the Go Ferm using 290 ml water at 110 F",
+                    "notes": "dry yeast package."
+                    + "Rehydrate in the Go Ferm using 290 ml water at 110 F",
                 },
             ],
             method_markdown="""
@@ -189,11 +190,11 @@ def seed_db():
 8. Allow at least 6 months of aging, but it's better in 12 months.
 9. Serve at room temperature.
         """.strip(),
-        notes_markdown=(
-            "This mead can be ready to drink in 2-3 months, everything improves with "
-            "time. More reading on detailed process notes is available here."
-        ),
-    )
+            notes_markdown=(
+                "This mead can be ready to drink in 2-3 months, everything improves with "
+                "time. More reading on detailed process notes is available here."
+            ),
+        )
 
     db.add(traditional_recipe)
     db.commit()
