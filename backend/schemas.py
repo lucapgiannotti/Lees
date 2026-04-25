@@ -2,7 +2,7 @@
 from datetime import datetime
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 # --- LOG SCHEMAS ---
@@ -51,6 +51,40 @@ class BatchResponse(BatchBase):
     phase: str
     start_date: datetime
     logs: List[LogResponse] = []
+
+    class Config:
+        from_attributes = True
+
+
+# --- RECIPE SCHEMAS ---
+class IngredientSchema(BaseModel):
+    name: str
+    amount: float
+    unit: str
+    scalable: bool = True
+    notes: Optional[str] = None
+
+
+class RecipeSchema(BaseModel):
+    name: str
+    source: Optional[str] = None
+    total_volume_gal: float = Field(..., description="Total volume of the batch in gallons")
+    style: str
+    carbonation: Optional[str] = None
+    target_og: float
+    target_fg_low: float
+    target_fg_high: float
+    ingredients: List[IngredientSchema]
+    method_markdown: Optional[str] = None
+    notes_markdown: Optional[str] = None
+
+
+class RecipeCreate(RecipeSchema):
+    pass
+
+
+class RecipeResponse(RecipeSchema):
+    id: int
 
     class Config:
         from_attributes = True

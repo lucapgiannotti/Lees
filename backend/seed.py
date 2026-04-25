@@ -142,6 +142,62 @@ def seed_db():
         )
     )
 
+    # Check if recipe already exists to prevent duplicate seeding
+    existing = db.query(models.Recipe).filter(models.Recipe.name == "Traditional").first()
+    if existing:
+        return
+
+    traditional_recipe = models.Recipe(
+        name="Traditional",
+        source="u/StormBeforeDawn",
+        total_volume=5.0,
+        style="Dry to Semi-Sweet Still Traditional",
+        carbonation="None",
+        target_og=1.075,
+        target_fg_low=1.000,
+        target_fg_high=1.012,
+        ingredients=[
+            {
+                "name": "Honey",
+                "amount": 10.5,
+                "unit": "lbs",
+                "scalable": True,
+                "notes": (
+                    "Use a good honey similar to hydromel. Traditionals use honey "
+                    "and yeast for flavor source."
+                ),
+            },
+            {"name": "GoFerm PE", "amount": 14.4, "unit": "g", "scalable": True, "notes": None},
+            {"name": "Fermaid O", "amount": 8.5, "unit": "g", "scalable": True, "notes": None},
+            {"name": "Fermaid K", "amount": 9.0, "unit": "g", "scalable": True, "notes": None},
+            {"name": "DAP", "amount": 5.0, "unit": "g", "scalable": True, "notes": None},
+            {
+                "name": "SafAle US-05",
+                "amount": 11.5,
+                "unit": "g",
+                "scalable": False,
+                "notes": "dry yeast package. Rehydrate in the Go Ferm using 290 ml water at 110 F",
+            },
+        ],
+        method_markdown="""
+1. Rehydrate the yeast using the GoFerm PE.
+2. Aerate twice daily until the gravity reaches 1.040.
+    3. After 24 hours add the 1/3rd of the nutrients, then the next at 48 hours,
+       and the last at the 1/3rd sugar break.
+4. Ferment at 62-65° F.
+5. Rack as desired.
+6. Stabilize and backsweeten as desired, or leave dry.
+7. Fine or filter if desired. Otherwise, wait until it's very clear.
+8. Allow at least 6 months of aging, but it's better in 12 months.
+9. Serve at room temperature.
+        """.strip(),
+        notes_markdown=(
+            "This mead can be ready to drink in 2-3 months, everything improves with "
+            "time. More reading on detailed process notes is available here."
+        ),
+    )
+
+    db.add(traditional_recipe)
     db.commit()
     print("✅ Database successfully seeded!")
     db.close()
