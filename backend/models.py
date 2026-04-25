@@ -43,7 +43,6 @@ class Log(Base):
     note = Column(String, nullable=True)
     rating = Column(Integer, nullable=True)
 
-    # NEW: Track backsweetening & step-feeding
     added_honey_g = Column(Float, nullable=True)
 
     batch = relationship("Batch", back_populates="logs")

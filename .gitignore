@@ -1,4 +1,6 @@
 /DESIGN.md
+backend/lees_tracker.db
+
 # Python environment and cache
 .venv/
 **/__pycache__/

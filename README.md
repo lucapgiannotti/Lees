@@ -88,15 +88,10 @@ Base URL: `http://127.0.0.1:8000`
 
 1. Fork the repository.a
 2. Create a feature branch.
-3. Make changes with tests or manual verification notes.
-4. Open a pull request with a clear summary and screenshots for UI changes.
+3. To populate with sample batches, run `npm run seed`
+4. Make changes with tests or manual verification notes.
+5. Open a pull request with a clear summary and screenshots for UI changes.
 
 ## License
 
-<<<<<<< HEAD
-No project license file is currently included.
-
-If you intend Lees to be publicly reusable as open source, add a `LICENSE` file (for example MIT, Apache-2.0, or GPL-3.0).
-=======
 MIT License
->>>>>>> refs/remotes/origin/main

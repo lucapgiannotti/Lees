@@ -3,7 +3,8 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "prepare": "husky"
+    "prepare": "husky",
+    "seed": "cd backend && python seed.py"
   },
   "devDependencies": {
     "husky": "^9.1.7"
