@@ -142,11 +142,6 @@ def seed_db():
         )
     )
 
-    # Check if recipe already exists to prevent duplicate seeding
-    existing = db.query(models.Recipe).filter(models.Recipe.name == "Traditional").first()
-    if existing:
-        return
-
     traditional_recipe = models.Recipe(
         name="Traditional",
         source="u/StormBeforeDawn",

@@ -57,7 +57,7 @@ class BatchResponse(BatchBase):
 
 
 # --- RECIPE SCHEMAS ---
-class IngredientSchema(BaseModel):
+class IngredientBase(BaseModel):
     name: str
     amount: float
     unit: str
@@ -65,7 +65,7 @@ class IngredientSchema(BaseModel):
     notes: Optional[str] = None
 
 
-class RecipeSchema(BaseModel):
+class RecipeBase(BaseModel):
     name: str
     source: Optional[str] = None
     total_volume_gal: float = Field(..., description="Total volume of the batch in gallons")

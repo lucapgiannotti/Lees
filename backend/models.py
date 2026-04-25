@@ -54,14 +54,14 @@ class Recipe(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True, nullable=False)
     source = Column(String, nullable=True)
-    total_volume = Column(Float, nullable=False)
+    total_volume_gal = Column(Float, nullable=False)
     style = Column(String, nullable=False)
-    carbonation = Column(String, nullable=False)
+    carbonation = Column(String, nullable=True)
     target_og = Column(Float, nullable=False)
     target_fg_low = Column(Float, nullable=False)
     target_fg_high = Column(Float, nullable=False)
 
     ingredients = Column(JSON, nullable=False)
 
-    method_markdown = Column(Text, nullable=False)
+    method_markdown = Column(Text, nullable=True)
     notes_markdown = Column(Text, nullable=True)
