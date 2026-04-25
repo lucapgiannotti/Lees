@@ -7,7 +7,9 @@ export default function BatchCard({ batch }) {
             <span className={`px-2 py-0.5 font-label-sm text-label-sm rounded ${batch.phaseColor}`}>
               {batch.phase}
             </span>
-            <span className="font-label-sm text-label-sm text-on-surface-variant">Batch #{batch.id}</span>
+            <span className="font-label-sm text-label-sm text-on-surface-variant">
+              Batch #{batch.id}
+            </span>
           </div>
           <h4 className="font-headline-md text-headline-md text-on-surface">{batch.name}</h4>
         </div>
@@ -27,16 +29,23 @@ export default function BatchCard({ batch }) {
         <div className="col-span-2 mt-2">
           <div className="flex justify-between font-label-sm text-label-sm mb-1 text-on-surface-variant">
             <span>Time in Phase</span>
-            <span>Day {batch.currentDay} of ~{batch.totalDays}</span>
+            <span>
+              Day {batch.currentDay} of ~{batch.totalDays}
+            </span>
           </div>
           <div className="w-full bg-surface-container rounded-full h-2">
-            <div className={`${batch.progressColor} h-2 rounded-full`} style={{ width: `${batch.progress}%` }}></div>
+            <div
+              className={`${batch.progressColor} h-2 rounded-full`}
+              style={{ width: `${batch.progress}%` }}
+            ></div>
           </div>
         </div>
       </div>
       <div className="bg-surface-container-low px-6 py-4 mt-auto border-t border-surface-container flex gap-3">
-        <button className="flex-1 bg-surface-container-lowest border border-outline text-on-surface font-body-md text-body-md font-medium py-2 rounded-lg hover:bg-surface-container transition-colors min-h-[48px]">Log Reading</button>
+        <button className="flex-1 bg-surface-container-lowest border border-outline text-on-surface font-body-md text-body-md font-medium py-2 rounded-lg hover:bg-surface-container transition-colors min-h-[48px]">
+          Log Reading
+        </button>
       </div>
     </div>
-  );
+  )
 }

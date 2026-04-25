@@ -1,5 +1,5 @@
 /* src/index.css */
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /* CRITICAL FIX: Use @theme instead of :root 
   This tells the Tailwind v4 engine to generate classes 
@@ -27,12 +27,12 @@
   --color-error: #ba1a1a;
 
   /* Typography */
-  --font-headline-lg: "Space Grotesk", sans-serif;
-  --font-headline-md: "Space Grotesk", sans-serif;
-  --font-metric-xl: "Space Grotesk", sans-serif;
-  --font-body-lg: "Work Sans", sans-serif;
-  --font-body-md: "Work Sans", sans-serif;
-  --font-label-sm: "Space Grotesk", sans-serif;
+  --font-headline-lg: 'Space Grotesk', sans-serif;
+  --font-headline-md: 'Space Grotesk', sans-serif;
+  --font-metric-xl: 'Space Grotesk', sans-serif;
+  --font-body-lg: 'Work Sans', sans-serif;
+  --font-body-md: 'Work Sans', sans-serif;
+  --font-label-sm: 'Space Grotesk', sans-serif;
 }
 
 /* Optional: Global resets */

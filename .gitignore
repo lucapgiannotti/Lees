@@ -1,4 +1,7 @@
 /DESIGN.md
+/.venv
 /backend/.venv
 /backend/data
 /backend/__pycache__
+node_modules/
+.husky/_/

@@ -1,7 +1,9 @@
 # backend/schemas.py
-from pydantic import BaseModel
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel
+
 
 # --- LOG SCHEMAS ---
 class LogBase(BaseModel):
@@ -12,8 +14,10 @@ class LogBase(BaseModel):
     # NEW: Track backsweetening & step-feeding
     added_honey_g: Optional[float] = None
 
+
 class LogCreate(LogBase):
     pass
+
 
 class LogResponse(LogBase):
     id: int
@@ -22,6 +26,7 @@ class LogResponse(LogBase):
 
     class Config:
         from_attributes = True
+
 
 # --- BATCH SCHEMAS ---
 class BatchBase(BaseModel):
@@ -35,8 +40,10 @@ class BatchBase(BaseModel):
     yield_bottles: Optional[int] = 0
     remaining_bottles: Optional[int] = 0
 
+
 class BatchCreate(BatchBase):
     pass
+
 
 class BatchResponse(BatchBase):
     id: int

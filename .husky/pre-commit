@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+
+set -e
+
+echo "Running frontend ESLint..."
+npm --prefix frontend run lint
+
+echo "Running frontend Prettier check..."
+npm --prefix frontend run format:check
+
+echo "Running backend Ruff..."
+if [ -x backend/.venv/Scripts/python.exe ]; then
+  backend/.venv/Scripts/python.exe -m ruff check backend
+  backend/.venv/Scripts/python.exe -m ruff format --check backend
+elif command -v ruff >/dev/null 2>&1; then
+  ruff check backend
+  ruff format --check backend
+else
+  echo "Ruff is not installed. Run: pip install -r backend/requirements-dev.txt"
+  exit 1
+fi
