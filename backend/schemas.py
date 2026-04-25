@@ -74,16 +74,16 @@ class RecipeBase(BaseModel):
     target_og: float
     target_fg_low: float
     target_fg_high: float
-    ingredients: List[IngredientSchema]
+    ingredients: List[IngredientBase]
     method_markdown: Optional[str] = None
     notes_markdown: Optional[str] = None
 
 
-class RecipeCreate(RecipeSchema):
+class RecipeCreate(RecipeBase):
     pass
 
 
-class RecipeResponse(RecipeSchema):
+class RecipeResponse(RecipeBase):
     id: int
 
     class Config:
