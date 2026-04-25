@@ -32,6 +32,8 @@ class BatchBase(BaseModel):
     volume_gal: float
     target_og: Optional[float] = None
     target_abv: Optional[float] = None
+    yield_bottles: Optional[int] = 0
+    remaining_bottles: Optional[int] = 0
 
 class BatchCreate(BatchBase):
     pass

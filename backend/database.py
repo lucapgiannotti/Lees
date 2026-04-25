@@ -3,8 +3,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
-# This creates a local file called 'lees_tracker.db' in your backend folder
-SQLALCHEMY_DATABASE_URL = "sqlite:///./lees_tracker.db"
+# SQLALCHEMY_DATABASE_URL = "sqlite:///./lees_tracker.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:////app/data/lees_tracker.db"
 
 # connect_args={"check_same_thread": False} is required for SQLite in FastAPI
 engine = create_engine(

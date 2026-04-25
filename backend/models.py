@@ -24,6 +24,9 @@ class Batch(Base):
 
     # Relationship to link logs to this specific batch
     logs = relationship("Log", back_populates="batch", cascade="all, delete-orphan")
+    
+    yield_bottles = Column(Integer, default=0)
+    remaining_bottles = Column(Integer, default=0)
 
 class Log(Base):
     __tablename__ = "logs"
