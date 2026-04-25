@@ -1,7 +1,17 @@
 /DESIGN.md
-/.venv
-/backend/.venv
-/backend/data
-/backend/__pycache__
+# Python environment and cache
+.venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+.ruff_cache/
+
+# Backend data (already correct, but good to keep)
+/backend/data/
+
+# Frontend dependencies
 node_modules/
+dist/
+
+# Husky
 .husky/_/
