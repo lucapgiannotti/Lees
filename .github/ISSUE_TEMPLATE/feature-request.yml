@@ -1,1 +1,17 @@
-
+name: "Feature Request"
+description: "Suggest an idea for Lees (calculators, UI tweaks, etc.)"
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: "Proposed Feature"
+      description: "What should Lees be able to do that it can't right now?"
+      placeholder: "e.g., I want a TOSNA 3.0 nutrient calculator integrated into the batch view."
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: "Why is this needed?"
+      description: "How does this improve the mead-making process?"

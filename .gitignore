@@ -1,1 +1,4 @@
 /DESIGN.md
+/backend/.venv
+/backend/data
+/backend/__pycache__

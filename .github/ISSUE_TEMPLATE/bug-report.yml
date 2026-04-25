@@ -1,1 +1,38 @@
-
+name: "Bug Report"
+description: "Report a glitch in the fermentation or a UI error."
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please provide as much detail as possible.
+  - type: textarea
+    id: description
+    attributes:
+      label: "What happened?"
+      description: "A clear and concise description of what the bug is."
+      placeholder: "e.g., The ABV calculated to a negative number after adding honey."
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: "Environment"
+      options:
+        - "Docker (Compose)"
+        - "Local Dev (npm run dev / uvicorn)"
+        - "Proxmox LXC/VM"
+        - "Other"
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: "Node & Python Versions"
+      description: "Run `node -v` and `python --version` and paste here."
+      placeholder: "Node v22.0.0, Python 3.11.2"
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs/Screenshots"
+      description: "Paste terminal output or drag-and-drop images here."
