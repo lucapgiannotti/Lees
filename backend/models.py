@@ -1,7 +1,7 @@
 # backend/models.py
 from datetime import datetime
 
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String
+from sqlalchemy import JSON, Column, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -46,3 +46,22 @@ class Log(Base):
     added_honey_g = Column(Float, nullable=True)
 
     batch = relationship("Batch", back_populates="logs")
+
+
+class Recipe(Base):
+    __tablename__ = "recipes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True, nullable=False)
+    source = Column(String, nullable=True)
+    total_volume_gal = Column(Float, nullable=False)
+    style = Column(String, nullable=False)
+    carbonation = Column(String, nullable=True)
+    target_og = Column(Float, nullable=False)
+    target_fg_low = Column(Float, nullable=False)
+    target_fg_high = Column(Float, nullable=False)
+
+    ingredients = Column(JSON, nullable=False)
+
+    method_markdown = Column(Text, nullable=True)
+    notes_markdown = Column(Text, nullable=True)
