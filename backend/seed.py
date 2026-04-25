@@ -142,39 +142,42 @@ def seed_db():
         )
     )
 
-    traditional_recipe = models.Recipe(
-        name="Traditional",
-        source="u/StormBeforeDawn",
-        total_volume=5.0,
-        style="Dry to Semi-Sweet Still Traditional",
-        carbonation="None",
-        target_og=1.075,
-        target_fg_low=1.000,
-        target_fg_high=1.012,
-        ingredients=[
-            {
-                "name": "Honey",
-                "amount": 10.5,
-                "unit": "lbs",
-                "scalable": True,
-                "notes": (
-                    "Use a good honey similar to hydromel. Traditionals use honey "
-                    "and yeast for flavor source."
-                ),
-            },
-            {"name": "GoFerm PE", "amount": 14.4, "unit": "g", "scalable": True, "notes": None},
-            {"name": "Fermaid O", "amount": 8.5, "unit": "g", "scalable": True, "notes": None},
-            {"name": "Fermaid K", "amount": 9.0, "unit": "g", "scalable": True, "notes": None},
-            {"name": "DAP", "amount": 5.0, "unit": "g", "scalable": True, "notes": None},
-            {
-                "name": "SafAle US-05",
-                "amount": 11.5,
-                "unit": "g",
-                "scalable": False,
-                "notes": "dry yeast package. Rehydrate in the Go Ferm using 290 ml water at 110 F",
-            },
-        ],
-        method_markdown="""
+    # Check if recipe already exists to prevent duplicate seeding
+    existing = db.query(models.Recipe).filter(models.Recipe.name == "Traditional").first()
+    if not existing:
+        traditional_recipe = models.Recipe(
+            name="Traditional",
+            source="u/StormBeforeDawn",
+            total_volume=5.0,
+            style="Dry to Semi-Sweet Still Traditional",
+            carbonation="None",
+            target_og=1.075,
+            target_fg_low=1.000,
+            target_fg_high=1.012,
+            ingredients=[
+                {
+                    "name": "Honey",
+                    "amount": 10.5,
+                    "unit": "lbs",
+                    "scalable": True,
+                    "notes": (
+                        "Use a good honey similar to hydromel. Traditionals use honey "
+                        "and yeast for flavor source."
+                    ),
+                },
+                {"name": "GoFerm PE", "amount": 14.4, "unit": "g", "scalable": True, "notes": None},
+                {"name": "Fermaid O", "amount": 8.5, "unit": "g", "scalable": True, "notes": None},
+                {"name": "Fermaid K", "amount": 9.0, "unit": "g", "scalable": True, "notes": None},
+                {"name": "DAP", "amount": 5.0, "unit": "g", "scalable": True, "notes": None},
+                {
+                    "name": "SafAle US-05",
+                    "amount": 11.5,
+                    "unit": "g",
+                    "scalable": False,
+                    "notes": "dry yeast package. Rehydrate in the Go Ferm using 290 ml water at 110 F",
+                },
+            ],
+            method_markdown="""
 1. Rehydrate the yeast using the GoFerm PE.
 2. Aerate twice daily until the gravity reaches 1.040.
     3. After 24 hours add the 1/3rd of the nutrients, then the next at 48 hours,
