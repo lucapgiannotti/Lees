@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard'
 import Batches from './pages/Batches'
 import Inventory from './pages/Inventory'
 import NewBatch from './pages/NewBatch'
+import RecipeBook from './pages/Recipes'
+
 
 export default function App() {
   return (
@@ -17,12 +19,7 @@ export default function App() {
           <Route path="/batches" element={<Batches />} />
           <Route
             path="/recipes"
-            element={
-              <div className="p-8 font-headline-md text-2xl text-on-surface">
-                Recipes Page Coming Soon
-              </div>
-            }
-          />
+            element={<RecipeBook />} />
           <Route path="/inventory" element={<Inventory />} />
           <Route path="/new-batch" element={<NewBatch />} />
         </Routes>

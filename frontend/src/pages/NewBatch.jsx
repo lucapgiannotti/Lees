@@ -54,7 +54,6 @@ export default function NewBatch() {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
-    // 1. Format the data to perfectly match our FastAPI Pydantic schema
     const payload = {
       name: batchName,
       style: meadType === 'Other' ? customMeadType : meadType,
@@ -66,7 +65,6 @@ export default function NewBatch() {
     }
 
     try {
-      // 2. Send it to the backend
       const response = await fetch('http://localhost:8000/api/batches', {
         method: 'POST',
         headers: {
@@ -76,7 +74,6 @@ export default function NewBatch() {
       })
 
       if (response.ok) {
-        // 3. If successful, route back to the main batches page
         navigate('/batches')
       } else {
         console.error('Failed to create batch')

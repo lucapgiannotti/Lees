@@ -112,3 +112,70 @@ def add_log(batch_id: int, log: schemas.LogCreate, db: Session = Depends(get_db)
     db.commit()
     db.refresh(db_log)
     return db_log
+
+
+# --- RECIPE ENDPOINTS ---
+
+
+@app.get("/api/recipes", response_model=list[schemas.RecipeResponse])
+def get_recipes(db: Session = Depends(get_db)):
+    """
+    Fetch all available recipes for the Cookbook master view.
+    """
+    recipes = db.query(models.Recipe).all()
+    return recipes
+
+
+@app.get("/api/recipes/{recipe_id}", response_model=schemas.RecipeResponse)
+def get_recipe(recipe_id: int, db: Session = Depends(get_db)):
+    """
+    Fetch a specific recipe by ID.
+    """
+    recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+    return recipe
+
+
+@app.post("/api/recipes", response_model=schemas.RecipeResponse)
+def create_recipe(recipe: schemas.RecipeCreate, db: Session = Depends(get_db)):
+    """
+    Create a new recipe formulation.
+    """
+    db_recipe = models.Recipe(**recipe.model_dump())
+    db.add(db_recipe)
+    db.commit()
+    db.refresh(db_recipe)
+    return db_recipe
+
+
+@app.delete("/api/recipes/{recipe_id}")
+def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
+    """
+    Delete a recipe from the Cookbook.
+    """
+    recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    db.delete(recipe)
+    db.commit()
+    return {"message": "Recipe deleted successfully"}
+
+
+@app.patch("/api/recipes/{recipe_id}", response_model=schemas.RecipeResponse)
+def update_recipe(recipe_id: int, recipe_update: dict, db: Session = Depends(get_db)):
+    """
+    Update an existing recipe.
+    """
+    recipe = db.query(models.Recipe).filter(models.Recipe.id == recipe_id).first()
+    if not recipe:
+        raise HTTPException(status_code=404, detail="Recipe not found")
+
+    for key, value in recipe_update.items():
+        if hasattr(recipe, key):
+            setattr(recipe, key, value)
+
+    db.commit()
+    db.refresh(recipe)
+    return recipe
