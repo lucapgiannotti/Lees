@@ -185,7 +185,8 @@ def seed_db():
             method_markdown="""
 1. Rehydrate the yeast using the GoFerm PE.
 2. Aerate twice daily until the gravity reaches 1.040.
-3. After 24 hours add the 1/3rd of the nutrients, then the next at 48 hours and the last at the 1/3rd sugar break.
+3. After 24 hours add the 1/3rd of the nutrients, \
+then the next at 48 hours and the last at the 1/3rd sugar break.
 4. Ferment at 62-65° F.
 5. Rack as desired.
 6. Stabilize and backsweeten as desired, or leave dry.
