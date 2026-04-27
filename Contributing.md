@@ -1,5 +1,3 @@
-![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/lucapgiannotti/Lees?style=for-the-badge&color=ed966d)
-
 # Contributing to Lees :beer:
 
 First off, thanks for taking an interest in **Lees**! Whether you're fixing a bug, reporting an issue, or adding a new feature, your help is appreciated.
@@ -67,6 +65,8 @@ We use automated tools to keep the codebase readable.
         
 
 ## 🌿 Contribution Workflow
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/lucapgiannotti/Lees?style=for-the-badge&color=ed966d)
+
 
 1. **Find an Issue**: Check the [Issues tab](https://www.google.com/search?q=https://github.com/lucapgiannotti/Lees/issues). Look for the `good first issue` label if you're new!.
     
