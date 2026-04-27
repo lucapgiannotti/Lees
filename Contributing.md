@@ -98,7 +98,7 @@ We use specific labels to organize the workflow:
 - `contains DB migrations`: High alert—indicates the SQLite schema is changing.
     
 
-## ⚖️ License
+## License
 
 By contributing, you agree that your contributions will be licensed under the **MIT License**.
 
