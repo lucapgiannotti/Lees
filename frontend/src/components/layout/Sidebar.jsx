@@ -27,7 +27,6 @@ export default function Sidebar() {
           <NavLink
             key={link.path}
             to={link.path}
-            // NavLink gives us access to an 'isActive' boolean!
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors duration-150 ${
                 isActive
@@ -36,7 +35,7 @@ export default function Sidebar() {
               }`
             }
           >
-            {/* We also use isActive here to make the icon solid when selected */}
+            {}
             {({ isActive }) => (
               <>
                 <span
