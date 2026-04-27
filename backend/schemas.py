@@ -34,6 +34,10 @@ class BatchBase(BaseModel):
     style: str
     recipe: Optional[str] = None
     yeast: Optional[str] = None
+
+    honey_varietal: Optional[str] = None
+    nutrient_protocol: Optional[str] = None
+
     volume_gal: float
     target_og: Optional[float] = None
     target_abv: Optional[float] = None

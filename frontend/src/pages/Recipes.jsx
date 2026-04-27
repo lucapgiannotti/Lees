@@ -467,9 +467,7 @@ export default function Recipes() {
       <header className="mb-8 flex justify-between items-end">
         <div>
           <h1 className="font-headline-lg text-3xl font-bold">Cookbook</h1>
-          <p className="text-on-surface-variant">
-            Standardized library for the precision meadmaker.
-          </p>
+          <p className="text-on-surface-variant">Standardized library for the meadmaker.</p>
         </div>
         {/* Placeholder for a "New Recipe" button in the future */}
       </header>

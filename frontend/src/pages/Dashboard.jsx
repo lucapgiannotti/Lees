@@ -61,6 +61,13 @@ export default function Dashboard() {
             totalDays,
             progress,
             progressColor,
+
+            // NEW: Pass formulation data down to the BatchCard
+            style: batch.style,
+            recipe: batch.recipe,
+            honey_varietal: batch.honey_varietal,
+            yeast: batch.yeast,
+            nutrient_protocol: batch.nutrient_protocol,
           }
         })
 

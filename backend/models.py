@@ -18,6 +18,9 @@ class Batch(Base):
     recipe = Column(String, nullable=True)
     yeast = Column(String, nullable=True)
 
+    honey_varietal = Column(String, nullable=True)
+    nutrient_protocol = Column(String, nullable=True)
+
     # Formulated targets
     volume_gal = Column(Float)
     target_og = Column(Float, nullable=True)
