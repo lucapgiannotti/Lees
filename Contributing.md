@@ -2,7 +2,7 @@
 
 First off, thanks for taking an interest in **Lees**! Whether you're fixing a bug, reporting an issue, or adding a new feature, your help is appreciated.
 
-## 🛠 Prerequisites
+## Prerequisites
 
 To get started, ensure you have the following installed on your local machine:
 
@@ -15,7 +15,7 @@ To get started, ensure you have the following installed on your local machine:
 - **Git**: For version control.
     
 
-## 🚀 Local Development Setup
+## Local Development Setup
 
 ### 1. Clone the Repository
 

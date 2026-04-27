@@ -8,7 +8,7 @@ backend/lees_tracker.db
 *$py.class
 .ruff_cache/
 
-# Backend data (already correct, but good to keep)
+# Backend data
 /backend/data/
 
 # Frontend dependencies
