@@ -19,10 +19,14 @@ export default function NewBatch() {
   // Basic Details
   const [batchName, setBatchName] = useState('')
   const [meadType, setMeadType] = useState('Traditional')
-  const [customMeadType, setCustomMeadType] = useState('') // For the "Other" option
+  const [customMeadType, setCustomMeadType] = useState('')
   const [recipe, setRecipe] = useState('')
-  const [yeast, setYeast] = useState('')
   const [volumeGal, setVolumeGal] = useState(1.0)
+
+  // NEW: Advanced Tracking Fields
+  const [honeyVarietal, setHoneyVarietal] = useState('')
+  const [yeast, setYeast] = useState('')
+  const [nutrientProtocol, setNutrientProtocol] = useState('')
 
   // Calculator State
   const [calcMode, setCalcMode] = useState('ingredients') // 'ingredients' or 'target_abv'
@@ -59,6 +63,8 @@ export default function NewBatch() {
       style: meadType === 'Other' ? customMeadType : meadType,
       recipe: recipe || null,
       yeast: yeast || null,
+      honey_varietal: honeyVarietal || null, // NEW
+      nutrient_protocol: nutrientProtocol || null, // NEW
       volume_gal: parseFloat(volumeGal),
       target_og: parseFloat(estOg),
       target_abv: parseFloat(estAbv) || parseFloat(targetAbv),
@@ -121,7 +127,7 @@ export default function NewBatch() {
               />
             </div>
 
-            {/* The New Style Dropdown */}
+            {/* Row 2: Style & Recipe */}
             <div className="flex flex-col gap-1">
               <label className="font-label-sm text-on-surface-variant">MEAD STYLE</label>
               <div className="relative">
@@ -158,9 +164,7 @@ export default function NewBatch() {
             {/* Conditional "Other" Input */}
             {meadType === 'Other' && (
               <div className="flex flex-col gap-1 md:col-span-2 animate-fade-in">
-                <label className="font-label-sm text-on-surface-variant text-primary">
-                  SPECIFY STYLE
-                </label>
+                <label className="font-label-sm text-on-surface-variant">SPECIFY STYLE</label>
                 <input
                   type="text"
                   value={customMeadType}
@@ -172,14 +176,37 @@ export default function NewBatch() {
               </div>
             )}
 
-            {/* Yeast spans both columns to balance the grid */}
-            <div className="flex flex-col gap-1 md:col-span-2">
+            {/* Row 3: Honey & Yeast */}
+            <div className="flex flex-col gap-1">
+              <label className="font-label-sm text-on-surface-variant">HONEY VARIETAL</label>
+              <input
+                type="text"
+                value={honeyVarietal}
+                onChange={(e) => setHoneyVarietal(e.target.value)}
+                placeholder="e.g., Orange Blossom, Clover..."
+                className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
               <label className="font-label-sm text-on-surface-variant">YEAST STRAIN</label>
               <input
                 type="text"
                 value={yeast}
                 onChange={(e) => setYeast(e.target.value)}
                 placeholder="e.g., Lalvin 71B, D47..."
+                className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              />
+            </div>
+
+            {/* Row 4: Nutrient Protocol */}
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label className="font-label-sm text-on-surface-variant">NUTRIENT PROTOCOL</label>
+              <input
+                type="text"
+                value={nutrientProtocol}
+                onChange={(e) => setNutrientProtocol(e.target.value)}
+                placeholder="e.g., TOSNA 3.0, Staggered Fermaid O additions..."
                 className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
               />
             </div>

@@ -6,16 +6,14 @@ from database import SessionLocal, engine
 
 
 def seed_db():
-    print("Building database schema...")
+    print("🧹 Dropping old schema to ensure fresh columns...")
+    models.Base.metadata.drop_all(bind=engine)
+
+    print("🛠 Building new database schema...")
     models.Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    print("Cleaning up old data...")
-    db.query(models.Log).delete()
-    db.query(models.Batch).delete()
-    db.commit()
-
-    print("Seeding Batches & Logs...")
+    print("🍯 Seeding Batches & Logs...")
 
     # --- BATCH 1: Active Primary ---
     batch1 = models.Batch(
@@ -27,6 +25,8 @@ def seed_db():
         volume_gal=1.0,
         target_og=1.110,
         target_abv=14.5,
+        honey_varietal="Orange Blossom",  # NEW
+        nutrient_protocol="TOSNA 3.0",  # NEW
         start_date=datetime.utcnow() - timedelta(days=7),
     )
     db.add(batch1)
@@ -70,6 +70,8 @@ def seed_db():
         volume_gal=1.0,
         target_og=1.095,
         target_abv=12.5,
+        honey_varietal="Wildflower",  # NEW
+        nutrient_protocol="Staggered Fermaid O/K",  # NEW
         start_date=datetime.utcnow() - timedelta(days=30),
     )
     db.add(batch2)
@@ -111,6 +113,8 @@ def seed_db():
         target_abv=13.0,
         yield_bottles=12,
         remaining_bottles=10,
+        honey_varietal="Clover",  # NEW
+        nutrient_protocol="SNA",  # NEW
         start_date=datetime.utcnow() - timedelta(days=120),
     )
     db.add(batch3)
@@ -181,8 +185,7 @@ def seed_db():
             method_markdown="""
 1. Rehydrate the yeast using the GoFerm PE.
 2. Aerate twice daily until the gravity reaches 1.040.
-    3. After 24 hours add the 1/3rd of the nutrients, then the next at 48 hours,
-       and the last at the 1/3rd sugar break.
+3. After 24 hours add the 1/3rd of the nutrients, then the next at 48 hours and the last at the 1/3rd sugar break.
 4. Ferment at 62-65° F.
 5. Rack as desired.
 6. Stabilize and backsweeten as desired, or leave dry.
@@ -196,7 +199,8 @@ def seed_db():
             ),
         )
 
-    db.add(traditional_recipe)
+        db.add(traditional_recipe)
+
     db.commit()
     print("✅ Database successfully seeded!")
     db.close()

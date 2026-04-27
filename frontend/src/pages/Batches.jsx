@@ -53,18 +53,21 @@ export default function Batches() {
   const [logHoney, setLogHoney] = useState('')
   const [logRating, setLogRating] = useState('5 - Excellent')
 
-  // Edit Modal State
+  // UPDATED: Edit Modal State includes new fields
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editForm, setEditForm] = useState({
     name: '',
     style: '',
     recipe: '',
+    honey_varietal: '',
+    nutrient_protocol: '',
+    yeast: '',
     target_abv: '',
     yield_bottles: 0,
     remaining_bottles: 0,
   })
 
-  // NEW: New Batch Modal State
+  // New Batch Modal State
   const [isNewModalOpen, setIsNewModalOpen] = useState(false)
   const [newBatchForm, setNewBatchForm] = useState({
     name: '',
@@ -72,6 +75,9 @@ export default function Batches() {
     volume_gal: 1.0,
     target_og: '',
     recipe: '',
+    honey_varietal: '',
+    nutrient_protocol: '',
+    yeast: '',
   })
 
   const fetchBatches = () => {
@@ -107,13 +113,25 @@ export default function Batches() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...newBatchForm,
+          honey_varietal: newBatchForm.honey_varietal || null,
+          nutrient_protocol: newBatchForm.nutrient_protocol || null,
+          yeast: newBatchForm.yeast || null,
           target_og: parseFloat(newBatchForm.target_og) || null,
           volume_gal: parseFloat(newBatchForm.volume_gal),
         }),
       })
       if (response.ok) {
         setIsNewModalOpen(false)
-        setNewBatchForm({ name: '', style: '', volume_gal: 1.0, target_og: '', recipe: '' })
+        setNewBatchForm({
+          name: '',
+          style: '',
+          volume_gal: 1.0,
+          target_og: '',
+          recipe: '',
+          honey_varietal: '',
+          nutrient_protocol: '',
+          yeast: '',
+        })
         fetchBatches()
       }
     } catch (err) {
@@ -195,11 +213,15 @@ export default function Batches() {
     }
   }
 
+  // UPDATED: Pre-fill the edit modal with the new parameters
   const openEditModal = () => {
     setEditForm({
       name: selectedBatch.name || '',
       style: selectedBatch.style || '',
       recipe: selectedBatch.recipe || '',
+      honey_varietal: selectedBatch.honey_varietal || '',
+      nutrient_protocol: selectedBatch.nutrient_protocol || '',
+      yeast: selectedBatch.yeast || '',
       target_abv: selectedBatch.target_abv || '',
       yield_bottles: selectedBatch.yield_bottles || 0,
       remaining_bottles: selectedBatch.remaining_bottles || 0,
@@ -275,9 +297,25 @@ export default function Batches() {
               </span>
             </div>
             <h1 className="font-headline-lg text-4xl">{selectedBatch.name}</h1>
-            <p className="text-on-surface-variant mt-1 font-medium">
-              {selectedBatch.recipe || selectedBatch.style}
-            </p>
+
+            {/* UPDATED: Detail Header now shows Recipe, Honey, Yeast, and Nutrient Protocol */}
+            <div className="flex flex-col gap-1 mt-2">
+              <p className="text-on-surface-variant font-medium">
+                {selectedBatch.recipe || selectedBatch.style}
+              </p>
+              {(selectedBatch.honey_varietal || selectedBatch.yeast) && (
+                <p className="text-sm text-on-surface-variant/80 flex items-center gap-2">
+                  {selectedBatch.honey_varietal && <span>{selectedBatch.honey_varietal}</span>}
+                  {selectedBatch.honey_varietal && selectedBatch.yeast && <span>•</span>}
+                  {selectedBatch.yeast && <span>{selectedBatch.yeast}</span>}
+                </p>
+              )}
+              {selectedBatch.nutrient_protocol && (
+                <p className="text-sm text-on-surface-variant/80 flex items-center gap-2">
+                  <span>{selectedBatch.nutrient_protocol}</span>
+                </p>
+              )}
+            </div>
           </div>
           <div className="flex gap-3 items-center">
             <button
@@ -525,6 +563,7 @@ export default function Batches() {
           </div>
         </div>
 
+        {/* UPDATED: Edit Modal with new fields */}
         {isEditModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/20 backdrop-blur-sm p-4">
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg w-full max-w-lg overflow-hidden">
@@ -537,37 +576,86 @@ export default function Batches() {
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
-              <form onSubmit={handleSaveEdit} className="p-6 flex flex-col gap-5 text-on-surface">
+              <form
+                onSubmit={handleSaveEdit}
+                className="p-6 flex flex-col gap-4 text-on-surface max-h-[80vh] overflow-y-auto"
+              >
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-label-sm">Batch Name</label>
+                  <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                    Batch Name
+                  </label>
                   <input
                     type="text"
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="bg-surface-container-lowest border border-outline-variant rounded p-3"
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
                     required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs">Style</label>
+                    <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                      Style
+                    </label>
                     <input
                       type="text"
                       value={editForm.style}
                       onChange={(e) => setEditForm({ ...editForm, style: e.target.value })}
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3"
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs">Recipe</label>
+                    <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                      Recipe
+                    </label>
                     <input
                       type="text"
                       value={editForm.recipe}
                       onChange={(e) => setEditForm({ ...editForm, recipe: e.target.value })}
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3"
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
                     />
                   </div>
                 </div>
+
+                {/* NEW EDIT FIELDS */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                      Honey Varietal
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.honey_varietal}
+                      onChange={(e) => setEditForm({ ...editForm, honey_varietal: e.target.value })}
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                      Yeast
+                    </label>
+                    <input
+                      type="text"
+                      value={editForm.yeast}
+                      onChange={(e) => setEditForm({ ...editForm, yeast: e.target.value })}
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                    Nutrient Protocol
+                  </label>
+                  <input
+                    type="text"
+                    value={editForm.nutrient_protocol}
+                    onChange={(e) =>
+                      setEditForm({ ...editForm, nutrient_protocol: e.target.value })
+                    }
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
+                  />
+                </div>
+
                 <div className="mt-4 flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-surface-container gap-4">
                   <button
                     type="button"
@@ -580,7 +668,7 @@ export default function Batches() {
                     <button
                       type="button"
                       onClick={() => setIsEditModalOpen(false)}
-                      className="px-6 py-3 border border-outline font-label-sm uppercase"
+                      className="px-6 py-3 border border-outline rounded font-label-sm uppercase"
                     >
                       Cancel
                     </button>
@@ -645,6 +733,8 @@ export default function Batches() {
                   <div className="col-span-1 font-label-sm text-on-surface-variant">
                     #{batch.id}
                   </div>
+
+                  {/* UPDATED: List View shows Honey and Yeast as a subtle subtitle */}
                   <div className="col-span-4">
                     <p className="font-headline-md text-lg text-on-surface group-hover:text-primary transition-colors">
                       {batch.name}
@@ -652,7 +742,14 @@ export default function Batches() {
                     <p className="font-body-md text-sm text-on-surface-variant">
                       {batch.recipe || batch.style}
                     </p>
+                    {(batch.honey_varietal || batch.yeast) && (
+                      <p className="text-xs text-on-surface-variant/70 mt-0.5">
+                        {batch.honey_varietal} {batch.honey_varietal && batch.yeast && ' | '}{' '}
+                        {batch.yeast}
+                      </p>
+                    )}
                   </div>
+
                   <div className="col-span-2">
                     <span
                       className={`px-2 py-0.5 font-label-sm text-[10px] rounded ${getPhaseColor(batch.phase)} whitespace-nowrap`}
@@ -709,7 +806,10 @@ export default function Batches() {
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <form onSubmit={handleCreateBatch} className="p-6 flex flex-col gap-5">
+            <form
+              onSubmit={handleCreateBatch}
+              className="p-6 flex flex-col gap-5 max-h-[80vh] overflow-y-auto"
+            >
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] uppercase font-label-sm text-primary">
                   Batch Name
@@ -734,7 +834,7 @@ export default function Batches() {
                     onChange={(e) =>
                       setNewBatchForm({ ...newBatchForm, volume_gal: e.target.value })
                     }
-                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
                   />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -748,10 +848,55 @@ export default function Batches() {
                     onChange={(e) =>
                       setNewBatchForm({ ...newBatchForm, target_og: e.target.value })
                     }
-                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                    Honey Varietal
+                  </label>
+                  <input
+                    type="text"
+                    value={newBatchForm.honey_varietal}
+                    onChange={(e) =>
+                      setNewBatchForm({ ...newBatchForm, honey_varietal: e.target.value })
+                    }
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                    placeholder="e.g. Clover"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                    Yeast
+                  </label>
+                  <input
+                    type="text"
+                    value={newBatchForm.yeast}
+                    onChange={(e) => setNewBatchForm({ ...newBatchForm, yeast: e.target.value })}
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                    placeholder="e.g. Lalvin 71B"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                  Nutrient Protocol
+                </label>
+                <input
+                  type="text"
+                  value={newBatchForm.nutrient_protocol}
+                  onChange={(e) =>
+                    setNewBatchForm({ ...newBatchForm, nutrient_protocol: e.target.value })
+                  }
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                  placeholder="e.g. TOSNA 3.0"
+                />
+              </div>
+
               <div className="flex flex-col gap-1">
                 <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
                   Recipe Source
@@ -760,7 +905,7 @@ export default function Batches() {
                   type="text"
                   value={newBatchForm.recipe}
                   onChange={(e) => setNewBatchForm({ ...newBatchForm, recipe: e.target.value })}
-                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
                 />
               </div>
               <div className="pt-4 border-t border-surface-container flex gap-3">
