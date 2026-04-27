@@ -148,7 +148,7 @@ def seed_db():
         traditional_recipe = models.Recipe(
             name="Traditional",
             source="u/StormBeforeDawn",
-            total_volume=5.0,
+            total_volume_gal=5.0,
             style="Dry to Semi-Sweet Still Traditional",
             carbonation="None",
             target_og=1.075,

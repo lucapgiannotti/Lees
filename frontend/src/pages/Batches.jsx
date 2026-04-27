@@ -1,5 +1,5 @@
-// src/pages/Batches.jsx
 import React, { useState, useEffect } from 'react'
+import { useLocation } from 'react-router-dom'
 
 // --- HELPERS ---
 
@@ -7,7 +7,6 @@ const calculateMeasuredAbv = (batch) => {
   const logs = batch.logs || []
   if (logs.length === 0) return '0.0'
 
-  // 1. Find Peak Fermentation
   const readingsBeforeHoney = []
   let honeyWasAdded = false
   logs.forEach((log) => {
@@ -19,7 +18,6 @@ const calculateMeasuredAbv = (batch) => {
   const terminalFg = readingsBeforeHoney.length > 0 ? Math.min(...readingsBeforeHoney) : og
   const peakAbv = (og - terminalFg) * 131.25
 
-  // 2. Apply Dilution (Volume Displacement)
   const totalHoneyG = logs.reduce((sum, l) => sum + (l.added_honey_g || 0), 0)
   const honeyVolGal = (totalHoneyG / 453.592) * 0.085
   const baseVol = batch.volume_gal || 1.0
@@ -42,10 +40,12 @@ const getDaysActive = (startDate) => {
 }
 
 export default function Batches() {
+  const location = useLocation()
   const [batches, setBatches] = useState([])
   const [selectedBatch, setSelectedBatch] = useState(null)
   const [activeTab, setActiveTab] = useState('ACTIVE')
 
+  // Log Form State
   const [logType, setLogType] = useState('reading')
   const [logSg, setLogSg] = useState('')
   const [logTemp, setLogTemp] = useState('')
@@ -53,6 +53,7 @@ export default function Batches() {
   const [logHoney, setLogHoney] = useState('')
   const [logRating, setLogRating] = useState('5 - Excellent')
 
+  // Edit Modal State
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [editForm, setEditForm] = useState({
     name: '',
@@ -61,6 +62,16 @@ export default function Batches() {
     target_abv: '',
     yield_bottles: 0,
     remaining_bottles: 0,
+  })
+
+  // NEW: New Batch Modal State
+  const [isNewModalOpen, setIsNewModalOpen] = useState(false)
+  const [newBatchForm, setNewBatchForm] = useState({
+    name: '',
+    style: '',
+    volume_gal: 1.0,
+    target_og: '',
+    recipe: '',
   })
 
   const fetchBatches = () => {
@@ -73,6 +84,42 @@ export default function Batches() {
   useEffect(() => {
     fetchBatches()
   }, [])
+
+  // --- BREW THIS INTEGRATION ---
+  useEffect(() => {
+    if (location.state?.autoOpen && location.state?.prefill) {
+      queueMicrotask(() => {
+        setNewBatchForm((prev) => ({
+          ...prev,
+          ...location.state.prefill,
+        }))
+        setIsNewModalOpen(true)
+        window.history.replaceState({}, document.title)
+      })
+    }
+  }, [location])
+
+  const handleCreateBatch = async (e) => {
+    e.preventDefault()
+    try {
+      const response = await fetch('http://localhost:8000/api/batches', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...newBatchForm,
+          target_og: parseFloat(newBatchForm.target_og) || null,
+          volume_gal: parseFloat(newBatchForm.volume_gal),
+        }),
+      })
+      if (response.ok) {
+        setIsNewModalOpen(false)
+        setNewBatchForm({ name: '', style: '', volume_gal: 1.0, target_og: '', recipe: '' })
+        fetchBatches()
+      }
+    } catch (err) {
+      console.error('Failed to launch batch:', err)
+    }
+  }
 
   const filteredBatches = batches.filter((batch) => batch.status === activeTab)
 
@@ -194,7 +241,7 @@ export default function Batches() {
     }
   }
 
-  // --- DETAIL VIEW LOGIC ---
+  // --- DETAIL VIEW ---
   if (selectedBatch) {
     const isBottled = selectedBatch.status === 'BOTTLED' || selectedBatch.status === 'ARCHIVED'
     const logs = selectedBatch.logs || []
@@ -203,8 +250,6 @@ export default function Batches() {
         .slice()
         .reverse()
         .find((l) => l.sg != null)?.sg || '--'
-
-    // NEW: Use helper for Measured ABV
     const measuredAbv = calculateMeasuredAbv(selectedBatch)
     const showMeasuredAbv = selectedBatch.phase !== 'Primary' && !isBottled
 
@@ -237,7 +282,7 @@ export default function Batches() {
           <div className="flex gap-3 items-center">
             <button
               onClick={openEditModal}
-              className="bg-surface-container-lowest border border-outline text-on-surface px-4 py-2 rounded font-label-sm uppercase tracking-widest hover:bg-surface-container transition-colors"
+              className="bg-surface-container-lowest border border-outline text-on-surface px-4 py-2 rounded font-label-sm uppercase hover:bg-surface-container transition-colors"
             >
               Edit
             </button>
@@ -245,7 +290,7 @@ export default function Batches() {
               <select
                 value={selectedBatch.phase || 'Primary'}
                 onChange={handlePhaseChange}
-                className="appearance-none bg-primary text-on-primary px-4 py-2 pr-10 rounded font-label-sm uppercase tracking-widest hover:opacity-90 cursor-pointer transition-opacity border border-transparent focus:outline-none focus:ring-1 focus:ring-primary"
+                className="appearance-none bg-primary text-on-primary px-4 py-2 pr-10 rounded font-label-sm uppercase tracking-widest hover:opacity-90 cursor-pointer border border-transparent focus:outline-none"
               >
                 <option value="Primary">Primary</option>
                 <option value="Secondary">Secondary</option>
@@ -266,7 +311,6 @@ export default function Batches() {
               <h2 className="font-headline-md text-xl border-b border-surface-container pb-3 mb-4">
                 {isBottled ? 'Cellar Status' : 'Current Status'}
               </h2>
-
               <div
                 className={`grid ${isBottled ? 'grid-cols-2' : showMeasuredAbv ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}
               >
@@ -337,7 +381,7 @@ export default function Batches() {
                     <select
                       value={logRating}
                       onChange={(e) => setLogRating(e.target.value)}
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none"
                     >
                       <option>5 - Excellent</option>
                       <option>4 - Very Good</option>
@@ -368,27 +412,25 @@ export default function Batches() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col justify-end gap-1">
                       <label className="font-label-sm text-on-surface-variant uppercase text-[10px]">
-                        Specific Gravity
+                        SG
                       </label>
                       <input
                         type="number"
                         step="0.001"
                         value={logSg}
                         onChange={(e) => setLogSg(e.target.value)}
-                        placeholder="1.000"
-                        className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                        className="bg-surface-container-lowest border border-outline-variant rounded p-3"
                       />
                     </div>
                     <div className="flex flex-col justify-end gap-1">
                       <label className="font-label-sm text-on-surface-variant uppercase text-[10px]">
-                        Temp (°F)
+                        Temp
                       </label>
                       <input
                         type="number"
                         value={logTemp}
                         onChange={(e) => setLogTemp(e.target.value)}
-                        placeholder="68"
-                        className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                        className="bg-surface-container-lowest border border-outline-variant rounded p-3"
                       />
                     </div>
                   </div>
@@ -396,14 +438,13 @@ export default function Batches() {
                   !isBottled && (
                     <div className="flex flex-col gap-1">
                       <label className="font-label-sm text-tertiary uppercase text-[10px]">
-                        Honey Added (Grams)
+                        Honey (g)
                       </label>
                       <input
                         type="number"
                         value={logHoney}
                         onChange={(e) => setLogHoney(e.target.value)}
-                        placeholder="e.g. 200"
-                        className="bg-surface-container-lowest border border-tertiary/50 rounded p-3 font-body-md focus:outline-none focus:border-tertiary focus:ring-1 focus:ring-tertiary transition-all"
+                        className="bg-surface-container-lowest border border-tertiary/50 rounded p-3"
                         required
                       />
                     </div>
@@ -417,15 +458,14 @@ export default function Batches() {
                     rows="3"
                     value={logNote}
                     onChange={(e) => setLogNote(e.target.value)}
-                    placeholder={isBottled ? 'Aroma, clarity, taste...' : 'Observations...'}
-                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary transition-all resize-none"
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 resize-none"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-surface-container-highest border border-outline text-on-surface font-label-sm uppercase tracking-widest py-3 rounded hover:bg-surface-container transition-colors mt-2"
+                  className="w-full bg-surface-container-highest border border-outline text-on-surface font-label-sm uppercase tracking-widest py-3 rounded mt-2"
                 >
-                  {isBottled ? 'Save Tasting & Drink 1 Bottle' : 'Save Entry'}
+                  {isBottled ? 'Save Tasting' : 'Save Entry'}
                 </button>
               </form>
             </div>
@@ -433,7 +473,7 @@ export default function Batches() {
 
           <div className="lg:col-span-2">
             <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
-              <div className="p-6 border-b border-surface-container flex justify-between items-center">
+              <div className="p-6 border-b border-surface-container">
                 <h2 className="font-headline-md text-xl">
                   {isBottled ? 'Tasting History' : 'Fermentation Log'}
                 </h2>
@@ -460,20 +500,17 @@ export default function Batches() {
                           </span>
                         )}
                         {log.added_honey_g && (
-                          <span className="font-label-sm text-tertiary border border-tertiary px-2 py-0.5 rounded uppercase tracking-widest bg-tertiary/10">
+                          <span className="font-label-sm text-tertiary border border-tertiary px-2 py-0.5 rounded bg-tertiary/10">
                             +{log.added_honey_g}g Honey
                           </span>
                         )}
                         {log.rating && (
-                          <span className="font-label-sm text-primary border border-primary px-2 py-0.5 rounded uppercase tracking-widest bg-primary/10">
+                          <span className="font-label-sm text-primary border border-primary px-2 py-0.5 rounded bg-primary/10">
                             Score: {log.rating}/5
                           </span>
                         )}
                         {log.temp && (
                           <span className="font-body-md text-on-surface-variant flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[16px]">
-                              thermostat
-                            </span>
                             {log.temp}°F
                           </span>
                         )}
@@ -495,77 +532,39 @@ export default function Batches() {
                 <h3 className="font-headline-md text-xl text-on-surface">Edit Batch Settings</h3>
                 <button
                   onClick={() => setIsEditModalOpen(false)}
-                  className="text-on-surface-variant hover:text-error transition-colors"
+                  className="text-on-surface-variant hover:text-error"
                 >
                   <span className="material-symbols-outlined">close</span>
                 </button>
               </div>
               <form onSubmit={handleSaveEdit} className="p-6 flex flex-col gap-5 text-on-surface">
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs uppercase font-label-sm text-on-surface-variant">
-                    Batch Name
-                  </label>
+                  <label className="text-xs font-label-sm">Batch Name</label>
                   <input
                     type="text"
                     value={editForm.name}
                     onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3"
                     required
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs uppercase font-label-sm text-on-surface-variant">
-                      Style
-                    </label>
+                    <label className="text-xs">Style</label>
                     <input
                       type="text"
                       value={editForm.style}
                       onChange={(e) => setEditForm({ ...editForm, style: e.target.value })}
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
-                    <label className="text-xs uppercase font-label-sm text-on-surface-variant">
-                      Recipe
-                    </label>
+                    <label className="text-xs">Recipe</label>
                     <input
                       type="text"
                       value={editForm.recipe}
                       onChange={(e) => setEditForm({ ...editForm, recipe: e.target.value })}
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 border-t border-surface-container pt-4">
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs uppercase font-label-sm text-on-surface-variant">
-                      Total Yield (Bottles)
-                    </label>
-                    <input
-                      type="number"
-                      value={editForm.yield_bottles}
-                      onChange={(e) =>
-                        setEditForm({
-                          ...editForm,
-                          yield_bottles: e.target.value,
-                          remaining_bottles: e.target.value,
-                        })
-                      }
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <label className="text-xs uppercase font-label-sm text-on-surface-variant">
-                      Remaining
-                    </label>
-                    <input
-                      type="number"
-                      value={editForm.remaining_bottles}
-                      onChange={(e) =>
-                        setEditForm({ ...editForm, remaining_bottles: e.target.value })
-                      }
-                      className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                      className="bg-surface-container-lowest border border-outline-variant rounded p-3"
                     />
                   </div>
                 </div>
@@ -573,24 +572,23 @@ export default function Batches() {
                   <button
                     type="button"
                     onClick={handleDeleteBatch}
-                    className="text-error font-label-sm uppercase px-4 py-2 flex items-center gap-1 hover:bg-error-container rounded transition-colors w-full sm:w-auto justify-center"
+                    className="text-error font-label-sm uppercase"
                   >
-                    <span className="material-symbols-outlined text-[18px]">delete</span> Delete
-                    Batch
+                    Delete Batch
                   </button>
                   <div className="flex gap-3 w-full sm:w-auto">
                     <button
                       type="button"
                       onClick={() => setIsEditModalOpen(false)}
-                      className="flex-1 sm:flex-none px-6 py-3 border border-outline font-label-sm uppercase rounded hover:bg-surface-container transition-colors"
+                      className="px-6 py-3 border border-outline font-label-sm uppercase"
                     >
                       Cancel
                     </button>
                     <button
                       type="submit"
-                      className="flex-1 sm:flex-none bg-primary text-on-primary font-label-sm uppercase px-6 py-3 rounded hover:opacity-90 transition-opacity"
+                      className="bg-primary text-on-primary font-label-sm uppercase px-6 py-3 rounded"
                     >
-                      Save Changes
+                      Save
                     </button>
                   </div>
                 </div>
@@ -612,10 +610,14 @@ export default function Batches() {
             Manage and log your operations.
           </p>
         </div>
-        <button className="bg-primary text-on-primary px-4 py-2 rounded font-label-sm uppercase tracking-widest hover:opacity-90 transition-opacity flex items-center gap-2 w-fit">
+        <button
+          onClick={() => setIsNewModalOpen(true)}
+          className="bg-primary text-on-primary px-4 py-2 rounded font-label-sm uppercase tracking-widest flex items-center gap-2 w-fit"
+        >
           <span className="material-symbols-outlined text-sm">add</span> New
         </button>
       </header>
+
       <div className="flex gap-2 border-b border-outline-variant mb-6 no-scrollbar overflow-x-auto">
         {['ACTIVE', 'BULK AGING', 'BOTTLED', 'ARCHIVED'].map((tab) => (
           <button
@@ -627,14 +629,13 @@ export default function Batches() {
           </button>
         ))}
       </div>
+
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
         <div className="divide-y divide-surface-container">
           {filteredBatches.length > 0 ? (
             filteredBatches.map((batch) => {
               const latestLog = batch.logs?.length > 0 ? batch.logs[batch.logs.length - 1] : null
-              // UPDATED: Use helper for List View ABV too
               const finalAbv = calculateMeasuredAbv(batch)
-
               return (
                 <div
                   key={batch.id}
@@ -695,6 +696,92 @@ export default function Batches() {
           )}
         </div>
       </div>
+
+      {isNewModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-on-surface/20 backdrop-blur-sm p-4">
+          <div className="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-lg w-full max-w-md overflow-hidden">
+            <div className="px-6 py-4 border-b border-surface-container flex justify-between items-center bg-surface-container-low">
+              <h3 className="font-headline-md text-xl text-on-surface">Pitch New Batch</h3>
+              <button
+                onClick={() => setIsNewModalOpen(false)}
+                className="text-on-surface-variant hover:text-error"
+              >
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <form onSubmit={handleCreateBatch} className="p-6 flex flex-col gap-5">
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] uppercase font-label-sm text-primary">
+                  Batch Name
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={newBatchForm.name}
+                  onChange={(e) => setNewBatchForm({ ...newBatchForm, name: e.target.value })}
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                    Volume (Gal)
+                  </label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={newBatchForm.volume_gal}
+                    onChange={(e) =>
+                      setNewBatchForm({ ...newBatchForm, volume_gal: e.target.value })
+                    }
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                  />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                    Target OG
+                  </label>
+                  <input
+                    type="number"
+                    step="0.001"
+                    value={newBatchForm.target_og}
+                    onChange={(e) =>
+                      setNewBatchForm({ ...newBatchForm, target_og: e.target.value })
+                    }
+                    className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                  Recipe Source
+                </label>
+                <input
+                  type="text"
+                  value={newBatchForm.recipe}
+                  onChange={(e) => setNewBatchForm({ ...newBatchForm, recipe: e.target.value })}
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md"
+                />
+              </div>
+              <div className="pt-4 border-t border-surface-container flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setIsNewModalOpen(false)}
+                  className="flex-1 px-4 py-3 border border-outline rounded-lg font-label-sm uppercase hover:bg-surface-container transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 bg-primary text-on-primary rounded-lg font-label-sm uppercase tracking-widest hover:opacity-90 transition-opacity py-3"
+                >
+                  Launch
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
