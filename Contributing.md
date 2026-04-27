@@ -49,7 +49,7 @@ npm install
 npm run dev
 ```
 
-## 🎨 Code Style & Standards
+## Code Style & Standards
 
 We use automated tools to keep the codebase readable.
 
@@ -64,7 +64,7 @@ We use automated tools to keep the codebase readable.
     - `npm run lint` (Frontend)
         
 
-## 🌿 Contribution Workflow
+## Contribution Workflow
 ![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/lucapgiannotti/Lees?style=for-the-badge&color=ed966d)
 
 
@@ -87,7 +87,7 @@ We use automated tools to keep the codebase readable.
     - Link the issue your PR resolves (e.g., `Closes #12`).
         
 
-## 🧪 Labels to Know
+## Labels to Know
 
 We use specific labels to organize the workflow:
 
@@ -104,4 +104,4 @@ By contributing, you agree that your contributions will be licensed under the **
 
 ---
 
-**Happy Brewing!** If you have questions, feel free to open a `status: help-wanted` issue.
+If you have questions, feel free to open a `status: help-wanted` issue.
