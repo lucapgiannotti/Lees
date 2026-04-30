@@ -1,17 +1,7 @@
 // src/pages/NewBatch.jsx
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
-const MEAD_STYLES = [
-  'Traditional',
-  'Melomel (Fruit)',
-  'Cyser (Apple)',
-  'Pyment (Grape)',
-  'Metheglin (Spiced)',
-  'Bochet (Caramelized)',
-  'Braggot (Malt)',
-  'Other',
-]
+import { MEAD_STYLES, SWEETNESS_LEVELS } from '../utils/constants'
 
 export default function NewBatch() {
   const navigate = useNavigate()
@@ -22,6 +12,7 @@ export default function NewBatch() {
   const [customMeadType, setCustomMeadType] = useState('')
   const [recipe, setRecipe] = useState('')
   const [volumeGal, setVolumeGal] = useState(1.0)
+  const [sweetness, setSweetness] = useState('')
 
   // NEW: Advanced Tracking Fields
   const [honeyVarietal, setHoneyVarietal] = useState('')
@@ -61,6 +52,7 @@ export default function NewBatch() {
     const payload = {
       name: batchName,
       style: meadType === 'Other' ? customMeadType : meadType,
+      sweetness: sweetness || null,
       recipe: recipe || null,
       yeast: yeast || null,
       honey_varietal: honeyVarietal || null, // NEW
@@ -176,7 +168,24 @@ export default function NewBatch() {
               </div>
             )}
 
-            {/* Row 3: Honey & Yeast */}
+            {/* Row 3: Sweetness Target */}
+            <div className="flex flex-col gap-1 md:col-span-2">
+              <label className="font-label-sm text-on-surface-variant">SWEETNESS TARGET</label>
+              <select
+                value={sweetness}
+                onChange={(e) => setSweetness(e.target.value)}
+                className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all"
+              >
+                <option value="">Unspecified</option>
+                {SWEETNESS_LEVELS.map((level) => (
+                  <option key={level} value={level}>
+                    {level}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Row 4: Honey & Yeast */}
             <div className="flex flex-col gap-1">
               <label className="font-label-sm text-on-surface-variant">HONEY VARIETAL</label>
               <input
@@ -199,7 +208,7 @@ export default function NewBatch() {
               />
             </div>
 
-            {/* Row 4: Nutrient Protocol */}
+            {/* Row 5: Nutrient Protocol */}
             <div className="flex flex-col gap-1 md:col-span-2">
               <label className="font-label-sm text-on-surface-variant">NUTRIENT PROTOCOL</label>
               <input
