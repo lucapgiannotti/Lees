@@ -95,7 +95,7 @@ We use specific labels to organize the workflow:
     
 - `area: backend`: FastAPI/Database tasks.
     
-- `contains DB migrations`: High alert—indicates the SQLite schema is changing.
+- `contains DB migrations`: Indicates the SQLite schema is changing. Ensure your commit uses `alembic` to take care of the migration.
     
 
 ## License
