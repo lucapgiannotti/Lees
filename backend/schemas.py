@@ -37,6 +37,7 @@ class BatchBase(BaseModel):
 
     honey_varietal: Optional[str] = None
     nutrient_protocol: Optional[str] = None
+    sweetness: Optional[str] = None
 
     volume_gal: float
     target_og: Optional[float] = None
