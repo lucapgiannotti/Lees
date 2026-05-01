@@ -49,6 +49,7 @@ export default function Batches() {
           nutrient_protocol: newBatchForm.nutrient_protocol || null,
           yeast: newBatchForm.yeast || null,
           target_og: parseFloat(newBatchForm.target_og) || null,
+          target_abv: parseFloat(newBatchForm.target_abv) || null,
           volume_gal: parseFloat(newBatchForm.volume_gal),
         }),
       })
@@ -102,6 +103,46 @@ export default function Batches() {
     }
   }
 
+  const handleDeleteLog = async (logId) => {
+    if (window.confirm('Are you sure you want to delete this log?')) {
+      try {
+        const response = await fetch(`http://localhost:8000/api/logs/${logId}`, {
+          method: 'DELETE',
+        })
+        if (response.ok) {
+          setSelectedBatch({
+            ...selectedBatch,
+            logs: selectedBatch.logs.filter((l) => l.id !== logId),
+          })
+          fetchBatches()
+        }
+      } catch (error) {
+        console.error('Error deleting log:', error)
+      }
+    }
+  }
+
+  const handleEditLog = async (logId, logData) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/logs/${logId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(logData),
+      })
+      if (response.ok) {
+        const updatedLog = await response.json()
+        const updatedLogs = selectedBatch.logs.map((l) => (l.id === logId ? updatedLog : l))
+        setSelectedBatch({
+          ...selectedBatch,
+          logs: updatedLogs,
+        })
+        fetchBatches()
+      }
+    } catch (error) {
+      console.error('Error updating log:', error)
+    }
+  }
+
   const handlePhaseChange = async (newPhase) => {
     let newStatus = selectedBatch.status
 
@@ -125,6 +166,24 @@ export default function Batches() {
       }
     } catch (error) {
       console.error('Error updating phase:', error)
+    }
+  }
+
+  const handleUpdateBottles = async (newRemaining) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/batches/${selectedBatch.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ remaining_bottles: newRemaining }),
+      })
+
+      if (response.ok) {
+        const updatedBatch = await response.json()
+        setSelectedBatch(updatedBatch)
+        fetchBatches()
+      }
+    } catch (error) {
+      console.error('Error updating bottles:', error)
     }
   }
 
@@ -169,7 +228,10 @@ export default function Batches() {
           onBack={() => setSelectedBatch(null)}
           onUpdatePhase={handlePhaseChange}
           onAddLog={handleSaveLog}
+          onDeleteLog={handleDeleteLog}
+          onEditLog={handleEditLog}
           onOpenEdit={() => setIsEditModalOpen(true)}
+          onUpdateBottles={handleUpdateBottles}
         />
         <EditBatchModal
           isOpen={isEditModalOpen}

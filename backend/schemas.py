@@ -19,6 +19,10 @@ class LogCreate(LogBase):
     pass
 
 
+class LogUpdate(LogBase):
+    date: Optional[datetime] = None
+
+
 class LogResponse(LogBase):
     id: int
     batch_id: int
@@ -85,6 +89,10 @@ class RecipeBase(BaseModel):
 
 
 class RecipeCreate(RecipeBase):
+    pass
+
+
+class RecipeUpdate(RecipeBase):
     pass
 
 

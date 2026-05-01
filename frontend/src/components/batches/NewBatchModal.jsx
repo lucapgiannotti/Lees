@@ -12,6 +12,7 @@ export default function NewBatchModal({ isOpen, onClose, onSubmit, initialData }
       name: initialData?.name || '',
       volume_gal: initialData?.volume_gal || 1.0,
       target_og: initialData?.target_og || '',
+      target_abv: initialData?.target_abv || '',
       recipe: initialData?.recipe || '',
       honey_varietal: initialData?.honey_varietal || '',
       nutrient_protocol: initialData?.nutrient_protocol || '',
@@ -21,6 +22,30 @@ export default function NewBatchModal({ isOpen, onClose, onSubmit, initialData }
       custom_style: isCustomStyle ? initialData?.style : '',
     }
   })
+
+  const [prevInitialData, setPrevInitialData] = useState(initialData)
+
+  if (initialData !== prevInitialData) {
+    setPrevInitialData(initialData)
+    const isCustomStyle =
+      initialData?.style &&
+      !MEAD_STYLES.includes(initialData.style) &&
+      initialData.style !== 'Other'
+
+    setNewBatchForm({
+      name: initialData?.name || '',
+      volume_gal: initialData?.volume_gal || 1.0,
+      target_og: initialData?.target_og || '',
+      target_abv: initialData?.target_abv || '',
+      recipe: initialData?.recipe || '',
+      honey_varietal: initialData?.honey_varietal || '',
+      nutrient_protocol: initialData?.nutrient_protocol || '',
+      yeast: initialData?.yeast || '',
+      sweetness: initialData?.sweetness || '',
+      style: isCustomStyle ? 'Other' : initialData?.style || '',
+      custom_style: isCustomStyle ? initialData?.style : '',
+    })
+  }
 
   if (!isOpen) return null
 
@@ -107,7 +132,7 @@ export default function NewBatchModal({ isOpen, onClose, onSubmit, initialData }
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="flex flex-col gap-1">
               <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
                 Volume (Gal)
@@ -129,6 +154,18 @@ export default function NewBatchModal({ isOpen, onClose, onSubmit, initialData }
                 step="0.001"
                 value={newBatchForm.target_og}
                 onChange={(e) => setNewBatchForm({ ...newBatchForm, target_og: e.target.value })}
+                className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-[10px] uppercase font-label-sm text-on-surface-variant">
+                Target ABV (%)
+              </label>
+              <input
+                type="number"
+                step="0.1"
+                value={newBatchForm.target_abv}
+                onChange={(e) => setNewBatchForm({ ...newBatchForm, target_abv: e.target.value })}
                 className="bg-surface-container-lowest border border-outline-variant rounded p-3 font-body-md focus:outline-none focus:border-primary"
               />
             </div>

@@ -36,16 +36,16 @@ export default function Dashboard() {
           // Determine colors and estimated timelines based on phase
           let phaseColor = 'bg-surface-container-highest text-on-surface'
           let progressColor = 'bg-primary'
-          let totalDays = 14 // Default estimate
+          let totalDays = 30 // Default estimate
 
           if (batch.phase?.includes('Primary')) {
             phaseColor = 'bg-primary-container text-on-primary-container'
             progressColor = 'bg-primary'
-            totalDays = 14
+            totalDays = 30
           } else if (batch.phase?.includes('Secondary')) {
             phaseColor = 'bg-secondary-container text-on-secondary-container'
             progressColor = 'bg-secondary'
-            totalDays = 30
+            totalDays = 90
           }
 
           const progress = Math.min(100, (daysActive / totalDays) * 100)

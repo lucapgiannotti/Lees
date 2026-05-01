@@ -15,7 +15,6 @@ export default function BatchCard({ batch }) {
           </div>
           <h4 className="font-headline-md text-xl text-on-surface mb-1">{batch.name}</h4>
 
-          {/* NEW: Explicit Formulation Data */}
           <div className="flex flex-col gap-1">
             <p className="font-body-sm text-sm text-on-surface-variant font-medium">
               {batch.recipe || batch.style}
@@ -74,11 +73,11 @@ export default function BatchCard({ batch }) {
         </div>
       </div>
 
-      <div className="bg-surface-container-low px-6 py-4 mt-auto border-t border-surface-container flex gap-3">
+      {/* <div className="bg-surface-container-low px-6 py-4 mt-auto border-t border-surface-container flex gap-3">
         <button className="flex-1 bg-surface-container-lowest border border-outline text-on-surface font-label-sm uppercase tracking-widest py-3 rounded-lg hover:bg-surface-container transition-colors min-h-12">
           Log Reading
         </button>
-      </div>
+      </div> */}
     </div>
   )
 }

@@ -52,12 +52,12 @@ export default function Sidebar() {
       </div>
 
       <div className="mt-auto">
-        <Link to="/new-batch">
+        {/* <Link to="/new-batch">
           <button className="w-full flex justify-center items-center gap-2 bg-primary text-on-primary py-3 rounded-xl font-body-md text-body-md font-medium hover:opacity-90 transition-opacity min-h-12">
             <span className="material-symbols-outlined">add</span>
             New Batch
           </button>
-        </Link>
+        </Link> */}
         <div className="mt-6 flex items-center gap-3 border-t border-outline-variant pt-4">
           <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-primary font-bold border border-outline-variant">
             BM

@@ -39,6 +39,8 @@ export default function EditBatchModal({ isOpen, onClose, batch, onSubmit, onDel
 
   if (!isOpen || !batch) return null
 
+  const isBottled = batch.status === 'BOTTLED' || batch.status === 'ARCHIVED'
+
   const handleSubmit = (e) => {
     e.preventDefault()
     const payload = {
@@ -176,6 +178,35 @@ export default function EditBatchModal({ isOpen, onClose, batch, onSubmit, onDel
               />
             </div>
           </div>
+
+          {isBottled && (
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                  Total Bottles (Yield)
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editForm.yield_bottles}
+                  onChange={(e) => setEditForm({ ...editForm, yield_bottles: e.target.value })}
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-label-sm uppercase text-on-surface-variant">
+                  Remaining Bottles
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editForm.remaining_bottles}
+                  onChange={(e) => setEditForm({ ...editForm, remaining_bottles: e.target.value })}
+                  className="bg-surface-container-lowest border border-outline-variant rounded p-3 focus:outline-none focus:border-primary"
+                />
+              </div>
+            </div>
+          )}
 
           <div className="mt-4 flex flex-col sm:flex-row justify-between items-center pt-4 border-t border-surface-container gap-4">
             <button type="button" onClick={onDelete} className="text-error font-label-sm uppercase">

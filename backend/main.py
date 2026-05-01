@@ -114,6 +114,32 @@ def add_log(batch_id: int, log: schemas.LogCreate, db: Session = Depends(get_db)
     return db_log
 
 
+@app.delete("/api/logs/{log_id}")
+def delete_log(log_id: int, db: Session = Depends(get_db)):
+    log = db.query(models.Log).filter(models.Log.id == log_id).first()
+    if not log:
+        raise HTTPException(status_code=404, detail="Log not found")
+
+    db.delete(log)
+    db.commit()
+    return {"message": "Log deleted"}
+
+
+@app.patch("/api/logs/{log_id}", response_model=schemas.LogResponse)
+def update_log(log_id: int, log_update: schemas.LogUpdate, db: Session = Depends(get_db)):
+    log = db.query(models.Log).filter(models.Log.id == log_id).first()
+    if not log:
+        raise HTTPException(status_code=404, detail="Log not found")
+
+    update_data = log_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
+        setattr(log, key, value)
+
+    db.commit()
+    db.refresh(log)
+    return log
+
+
 # --- RECIPE ENDPOINTS ---
 
 
@@ -164,7 +190,9 @@ def delete_recipe(recipe_id: int, db: Session = Depends(get_db)):
 
 
 @app.patch("/api/recipes/{recipe_id}", response_model=schemas.RecipeResponse)
-def update_recipe(recipe_id: int, recipe_update: dict, db: Session = Depends(get_db)):
+def update_recipe(
+    recipe_id: int, recipe_update: schemas.RecipeUpdate, db: Session = Depends(get_db)
+):
     """
     Update an existing recipe.
     """
@@ -172,7 +200,8 @@ def update_recipe(recipe_id: int, recipe_update: dict, db: Session = Depends(get
     if not recipe:
         raise HTTPException(status_code=404, detail="Recipe not found")
 
-    for key, value in recipe_update.items():
+    update_data = recipe_update.model_dump(exclude_unset=True)
+    for key, value in update_data.items():
         if hasattr(recipe, key):
             setattr(recipe, key, value)
 
